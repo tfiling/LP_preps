@@ -1,5 +1,37 @@
 :- use_module(naive_sat).
 
+% 1a
+
+nanogram_verify(Ns, N, Xs) :-
+    length(Xs, N),
+    rec_match(Ns, Xs).
+
+rec_match([N | Ns], [1 | Xs]) :-
+    N > 0,
+    N1 is N-1,
+    rec_match([N1 | Ns], Xs).
+
+rec_match([0, N | Ns], [1 | Xs]) :-
+    N > 0,
+    N1 is N-1,
+    rec_match([N1 | Ns], Xs).
+
+rec_match(Ns, [0 | Xs]) :-
+    Ns \= [0],
+    rec_match(Ns, Xs).
+
+rec_match([0], [0 | Xs]) :-
+    rec_match([0], Xs).
+
+rec_match([0], []).
+
+
+ver_nano(A) :-
+    A = [0, 1, 0],
+    length(A, N),
+    Ns = [1],
+    nanogram_verify(Ns, N, A).
+
 % 2a
 
 direct(Xs, N, CNF) :-
