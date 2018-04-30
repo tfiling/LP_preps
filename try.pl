@@ -1,5 +1,7 @@
 :- use_module(naive_sat).
 
+% 2a
+
 direct(Xs, N, CNF) :-
     length(Xs, N),
     up_to_one_bit(Xs, CNF1),
@@ -13,7 +15,7 @@ up_to_one_bit([X1, X2 | Rest], CNF) :-
 up_to_one_bit([], []).
 up_to_one_bit([_], []).
 
-% part 2
+% 2b
 
 diff(Xs, Ys, CNF) :-
     length(Xs, N),
@@ -34,3 +36,33 @@ both_not_one([], [], []).
 %     diff(A, B, CNF),
 %     sat(CNF).
 
+
+% 2c
+
+allDiff(XXs, N, CNF) :-
+    direct_all(XXs, N, CNF1),
+    diff_between_all(XXs, N, CNF2),
+    append([CNF1, CNF2], CNF).
+
+direct_all([Xs | XXs], N, CNF) :-
+    direct(Xs, N, CNF1),
+    direct_all(XXs, N, CNF2),
+    append(CNF1, CNF2, CNF).
+
+direct_all([], _, []).
+
+diff_between_all([Xs1, Xs2 | XXs], N, CNF) :-
+    diff(Xs1, Xs2, CNF1),
+    diff_between_all([Xs1 | XXs], N, CNF2),
+    diff_between_all([Xs2 | XXs], N, CNF3),
+    append([CNF1, CNF2, CNF3], CNF).
+
+diff_between_all([], _, []).
+diff_between_all([_], _, []).
+
+% gen_all_diff(A, B, C) :-
+%     length(A, 3), 
+%     length(B, 3), 
+%     length(C, 3), 
+%     allDiff([A, B, C], 3, CNF),
+%     sat(CNF).
