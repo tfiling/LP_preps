@@ -30,6 +30,8 @@ both_not_one([X | Xs], [Y | Ys], CNF) :-
 
 both_not_one([], [], []).
 
+% 2b with B
+
 % gen_diff(A, B) :-
 %     length(A, 3), 
 %     length(B, 3), 
@@ -65,3 +67,70 @@ gen_all_diff(A, B, C) :-
     length(C, 3), 
     allDiff([A, B, C], 3, CNF),
     sat(CNF).
+
+% 3a
+% first implementation with possible bug, probably because diff
+lex(Xs, Ys, CNF) :-
+    lex(_, Xs, Ys, CNF).
+
+lex(B, [X | Xs], [Y | Ys], CNF) :-
+    lex(B1, Xs, Ys, CNF1),
+    append([[B, X, Y, -B1], [B, -X, -Y, -B1], [-B, B1], [-B, -X, Y], [-B, X, Y]],
+            CNF1, CNF).
+
+lex(1, [], [], []).
+
+gen_lex1(A, B) :-
+    length(A, 3),
+    length(B, 3),
+    lex(_, A, B, CNF),
+    sat(CNF).
+
+
+% second implemntation, seems more solid but less effecient
+% lexLT(Xs, Ys, CNF) :-
+%     lexLT2(Xs, Ys, CNF1),
+%     diff(Xs, Ys, CNF2),
+%     append(CNF1, CNF2, CNF).
+
+% lexLT2([X | Xs], [Y | Ys], CNF) :-
+%     lexLT2(Xs, Ys, CNF1),
+%     append([[-X, Y]], CNF1, CNF).
+% lexLT2([], [], []).
+
+
+lexLT(Xs,Ys,Cnf):-
+        lexLT2(Xs,Ys,Cnf1),
+        diff(Xs,Ys,CNF2),
+        append(Cnf1,CNF2,Cnf).   
+
+lexLT2([], [], []).
+lexLT2([X|Xs], [Y|Ys], Cnf):-
+     lexLT(Xs, Ys, Cnf1),
+     append([[[-X, Y]], Cnf1], Cnf).
+
+gen_lex2(A, B) :-
+    length(A, 3),
+    length(B, 3),
+    lexLT(A, B, CNF),
+    sat(CNF).
+
+
+% 3b
+% doesnt work well, probably because of lex
+
+matrix_lex([X1, X2 | Rest], CNF) :-
+    lex(X1, X2, CNF1),
+    matrix_lex([X2 | Rest], CNF2),
+    append(CNF1, CNF2, CNF).
+
+matrix_lex([_], []).
+matrix_lex([], []).
+
+gen_mat_lex(A, B, C) :-
+    length(A, 4),
+    length(B, 4),
+    length(C, 4),
+    matrix_lex([A, B, C], CNF),
+    sat(CNF).
+
