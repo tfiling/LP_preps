@@ -166,3 +166,71 @@ gen_mat_lex(A, B, C) :-
     matrix_lex([A, B, C], CNF),
     sat(CNF).
 
+% 4a
+
+bit_vector(N, [1 | Rest]) :- 
+    N > 0, 
+    N1 is N - 1,
+    bit_vector(N1, Rest).
+
+bit_vector(N, [0 | Rest]) :- 
+    N > 0, 
+    N1 is N - 1,
+    bit_vector(N1, Rest).
+
+bit_vector(0, []).
+
+% 4b
+
+% apply_network([comparator(X1, X2, T1, T2) | Rest], In, Out) :-
+%     comparator(X1, X2, T1, T2),
+%     length(In, N),
+%     length(Out1, N),
+%     nth1(X1i, In, X1),
+%     nth1(X2i, In, X2),
+%     nth1(X1i, Out1, T1),
+%     nth1(X2i, Out1, T2),
+%     apply_network(Rest, Out1, Out).
+
+
+swap(X1, X2, T1, T2, [X1 | RestOriginal], [T1 | RestNew]) :-
+    swap(X1, X2, T1, T2, RestOriginal, RestNew).
+
+swap(X1, X2, T1, T2, [X2 | RestOriginal], [T2 | RestNew]) :-
+    swap(X1, X2, T1, T2, RestOriginal, RestNew).
+
+
+swap(X1, X2, T1, T2, [X | RestOriginal], [X | RestNew]) :-
+    X \= X1,
+    X \= X2,
+    swap(X1, X2, T1, T2, RestOriginal, RestNew).
+
+swap(_, _, _, _, [], []).
+
+apply_network([comparator(X1, X2, T1, T2) | Rest], In, Out) :-
+    comparator(X1, X2, T1, T2),
+    swap(X1, X2, T1, T2, In, NewIn),
+    apply_network(Rest, NewIn, Out).
+
+apply_network([comparator(X1, X2, T1, T2) | Rest], In, Out) :-
+    X1 > X2,
+    apply_network(Rest, In, Out).
+
+
+apply_network([], Out, Out).
+
+comparator(X1, X2, X2, X1):-
+     X1 > X2.
+
+
+comparator(X1, X2, X1, X2):-
+    X1 =< X2.
+    
+cs([
+    comparator(X1, X3, T1, T3), 
+    comparator(X2, X4, T2, T4),
+    comparator(T1, T2, Y1, Y2), 
+    comparator(T3, T4, Y3, Y4),
+    comparator(Y2, Y3, Z1, Z2)
+    ], [X1, X2, X3, X4]).
+    
