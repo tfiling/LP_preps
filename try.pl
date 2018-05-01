@@ -182,17 +182,6 @@ bit_vector(0, []).
 
 % 4b
 
-% apply_network([comparator(X1, X2, T1, T2) | Rest], In, Out) :-
-%     comparator(X1, X2, T1, T2),
-%     length(In, N),
-%     length(Out1, N),
-%     nth1(X1i, In, X1),
-%     nth1(X2i, In, X2),
-%     nth1(X1i, Out1, T1),
-%     nth1(X2i, Out1, T2),
-%     apply_network(Rest, Out1, Out).
-
-
 swap(X1, X2, T1, T2, [X1 | RestOriginal], [T1 | RestNew]) :-
     swap(X1, X2, T1, T2, RestOriginal, RestNew).
 
@@ -212,9 +201,9 @@ apply_network([comparator(X1, X2, T1, T2) | Rest], In, Out) :-
     swap(X1, X2, T1, T2, In, NewIn),
     apply_network(Rest, NewIn, Out).
 
-apply_network([comparator(X1, X2, T1, T2) | Rest], In, Out) :-
-    X1 > X2,
-    apply_network(Rest, In, Out).
+% apply_network([comparator(X1, X2, T1, T2) | Rest], In, Out) :-
+%     X1 > X2,
+%     apply_network(Rest, In, Out).
 
 
 apply_network([], Out, Out).
